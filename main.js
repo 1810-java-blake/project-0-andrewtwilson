@@ -29,10 +29,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Attempt at fetching from the Azure face api
     emotionBtn.addEventListener("click", event => {
-        fetch("https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect",{
-            method:'POST',
-            headers: {'Ocp-Apim-Subscription-Key': 'a5d4b501a2d04f2d946a0a2dc164c176'},
-            body: JSON.stringify({'url': 'https://drive.google.com/open?id=10a6iQzika7-GJBF2hEmw2sXigs1iRGPg'})
+        fetch("https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false",{
+            method: "POST",
+            headers: {
+                "Ocp-Apim-Subscription-Key": "a5d4b501a2d04f2d946a0a2dc164c176",
+                "Content-Type": "application/json; charset=utf-8" 
+            },
+            body: JSON.stringify({"url": "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=350"})
         })
         .then(res => res.json())
         .then(data => {
