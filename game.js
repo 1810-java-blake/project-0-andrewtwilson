@@ -33,32 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 this.newxy = 0;
                 this.hasCollided = false;
             }
-            // calcMagnitude() {
-            //     this.magnitude = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-            // }
-            // // splitVectorXY requires a vector magnitude and direction,
-            // // and splits this into its x and y components.
-            // // Currently only used after initialization
-            // splitVectorXY() {
-            //     this.vx = this.magnitude * Math.cos(this.direction);
-            //     this.vy = this.magnitude * Math.sin(this.direction);
-            // }
-            // // calcAngle() calculates the angle that the ball is 
-            // // traveling given the vector's x and y components
-            // calcAngle() {
-            //     this.direction = Math.atan2(this.vy, this.vx);
-            // }
-            // // update() function updates the balls position, moving
-            // // it every call of the Draw() function according to it's velocity,
-            // // then draws the ball again.
-            // update() {
-            //     this.xp += this.vx;
-            //     this.yp += this.vy;
-            //     this.hasCollided = false;
-            //     this.distToEachBall = [];
-            //     processing.ellipse(this.xp, this.yp, this.radius * 2, this.radius * 2);
-            //     processing.fill(this.color.r, this.color.g, this.color.b);
-            // }
         }
         function calcMagnitude(balls) {
             balls.forEach(ball => {
@@ -132,12 +106,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 }
             })
-            
+
             // Check if the distance between the balls' centers is smaller
             // than their combined radii.
             balls.forEach((ball, index) => {
                 for (i = 0; i < balls.length; i++) {
-                    if (distToEachBall[index][i] <= (ball.radius + balls[i].radius) && i !== index) {
+                    if (distToEachBall[index][i] <= (ball.radius + balls[i].radius + 1) && i !== index) {
                         collision.innerHTML = "YES";
 
                         ball.hasCollided = true;
