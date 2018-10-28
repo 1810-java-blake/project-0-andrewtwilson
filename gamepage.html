@@ -32,8 +32,8 @@
     <form id="addForm">
         <br />
         Name: <input id="name" type="text" name="name" maxlength="20" required> <br />
-        Radius: <input id="radius" type="number" name="radius" maxlength="2" required> <br />
-        Mass: <input id="mass" type="number" name="mass" maxlength="2" required> <br />
+        Radius (2 digits max): <input id="radius" type="text" name="radius" pattern="[0-9]{1,2}" required> <br />
+        Mass (2 digits max):<input id="mass" type="text" name="mass" pattern="[0-9]{1,2}" required> <br />
         Color: <input id="color" type="color" name="color" value="#ff0000" required>
 
         <input type="submit" value="Add Ball">
