@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
     <script src="https://cdn.jsdelivr.net/processing.js/1.4.8/processing.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="game.js"></script>
 </head>
 
@@ -32,13 +31,11 @@
 
     <form id="addForm">
         <br />
-        Name: <input id="name" type="text" name="name"> <br />
-        X: <input id="x" type="text" name="x"> <br />
-        Y: <input id="y" type="text" name="y"> <br />
-        Radius: <input id="radius" type="text" name="radius"> <br />
-        Mass: <input id="mass" type="text" name="mass"> <br />
-        Color: <input id="color" type="color" name="color" value="#ff0000">
-        <!-- Color: <input type="text" name="color"> <br /> -->
+        Name: <input id="name" type="text" name="name" maxlength="20" required> <br />
+        Radius: <input id="radius" type="number" name="radius" maxlength="2" required> <br />
+        Mass: <input id="mass" type="number" name="mass" maxlength="2" required> <br />
+        Color: <input id="color" type="color" name="color" value="#ff0000" required>
+
         <input type="submit" value="Add Ball">
     </form>
 </body>
