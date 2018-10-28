@@ -7,7 +7,8 @@
     <title>Physics Simulation</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
-    <script src="https://cdn.jsdelivr.net/processing.js/1.4.8/processing.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/processing.js/1.4.8/processing.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="game.js"></script>
 </head>
 
@@ -16,8 +17,30 @@
         <!--This draws the Canvas on the webpage -->
         <canvas id="gameCanvas"></canvas>
     </p>
-    <p align="left">Have the Circles collided?</p>
-    <h3 align="left" id="collision">NO</h3>
+    <!-- <p align="left">Have the Circles collided?</p>
+    <h3 align="left" id="collision">NO</h3> -->
+
+    <form id="removeForm">
+        <select name="Balls" id="selectBall">
+            <option value="ball1">Ball1</option>
+            <option value="ball2">Ball2</option>
+            <option value="ball3">Ball3</option>
+            <option value="ball4">Ball4</option>
+        </select>
+        <input type="submit" value="Remove Ball">
+    </form>
+
+    <form id="addForm">
+        <br />
+        Name: <input id="name" type="text" name="name"> <br />
+        X: <input id="x" type="text" name="x"> <br />
+        Y: <input id="y" type="text" name="y"> <br />
+        Radius: <input id="radius" type="text" name="radius"> <br />
+        Mass: <input id="mass" type="text" name="mass"> <br />
+        Color: <input id="color" type="color" name="color" value="#ff0000">
+        <!-- Color: <input type="text" name="color"> <br /> -->
+        <input type="submit" value="Add Ball">
+    </form>
 </body>
 
 </html>
