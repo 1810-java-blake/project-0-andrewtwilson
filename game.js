@@ -286,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // than their combined radii.
             balls.forEach((ball, index) => {
                 for (i = 0; i < balls.length; i++) {
-                    if (distToEachBall[index][i] <= (ball.radius + balls[i].radius + 1) && i !== index) {
+                    if (distToEachBall[index][i] <= (ball.radius + balls[i].radius) && i !== index) {// && distToEachBall[index][i] >= (ball.radius + balls[i].radius)) {
 
                         ball.hasCollided = true;
 
