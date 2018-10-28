@@ -1,31 +1,64 @@
+function euclidDistance(x1, y1, x2, y2) {
+    // console.log(x1 + " " + y1 + " " + x2 + " " + y2 + " ")
+    return (Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)));
+}
+
+function hexToRgb(hex){
+    var c;
+    if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+        c= hex.substring(1).split('');
+        if(c.length== 3){
+            c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+        }
+        c= '0x'+c.join('');
+        return [(c>>16)&255, (c>>8)&255, c&255].join(',');
+    }
+    throw new Error('Bad Hex');
+}
+
+function getSubstringIndex(str, substring, n) {
+    var times = 0, index = null;
+
+    while (times < n && index !== -1) {
+        index = str.indexOf(substring, index+1);
+        times++;
+    }
+
+    return index;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-    let collision = document.getElementById("collision");
     // Get the canvas that Processing-js will use
     let gameCanvas = document.getElementById("gameCanvas");
+    let removeForm = document.getElementById("removeForm");
+    let selectBall = document.getElementById("selectBall");
+    let addForm = document.getElementById("addForm");
+
+    // function updateHTML(Balls) {
+    //     balls.forEach( ball => {
+    //         ball1.innerHTML = 
+    //     })
+    // }
+
     // Pass the function sketchProc (defined in myCode.js) to Processing's constructor.
-
     let sketchProc = function (processing) {
-
-        function euclidDistance(x1, y1, x2, y2) {
-            // console.log(x1 + " " + y1 + " " + x2 + " " + y2 + " ")
-            return (Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)));
-        }
 
         // declare the Ball class, with properties for the physics calculations
         class Ball {
-            constructor(xp, yp, radius, mass, mag, dir, r, g, b) {
+            constructor(name, xp, yp, radius, mass, magnitude, direction, red, green, blue) {
+                this.name = name;
                 this.xp = xp;
                 this.yp = yp;
                 this.radius = radius;
                 this.mass = mass;
                 this.vector = {
-                    magnitude: mag,
-                    direction: dir
+                    magnitude,
+                    direction
                 };
                 this.color = {
-                    red: r,
-                    green: g,
-                    blue: b
+                    red,
+                    green,
+                    blue
                 };
                 this.vx = 0;
                 this.vy = 0;
@@ -75,10 +108,85 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let balls = [];
 
-        balls.push(new Ball(50, 190, 25, 2, 0.1, 0, 255, 0, 0));
-        balls.push(new Ball(350, 200, 25, 10, 0.1, Math.PI, 1, 1, 1,));
-        balls.push(new Ball(110, 200, 25, 3, 0, 0, 0, 0, 255));
-        balls.push(new Ball(110, 300, 15, 3, 0, 0, 0, 255, 0));
+        balls.push(new Ball("ball1", 50, 190, 25, 2, 0.1, 0, 255, 0, 0));
+        balls.push(new Ball("ball2", 350, 200, 25, 10, 0.1, Math.PI, 1, 1, 1,));
+        balls.push(new Ball("ball3", 110, 200, 25, 3, 0, 0, 0, 0, 255));
+        balls.push(new Ball("ball4", 110, 300, 15, 3, 0, 0, 0, 255, 0));
+
+        // When the "removeForm" form is submitted, remove the selected item from the list
+        // and its corresponding ball from the balls array.
+        removeForm.addEventListener("submit", event => {
+            // prevent the default "form submit" behavior
+            // (sending data according to the "action" attr of the form)
+            event.preventDefault();
+    
+            let removeIndex = document.getElementById("selectBall").selectedIndex;
+            let removeValue = document.getElementById("selectBall").options[removeIndex].value;
+    
+            let indexToRemove = 0;
+            balls.forEach((ball,index) => { if (removeValue === ball.name) { indexToRemove = index; } })
+
+            document.getElementById("selectBall").remove(removeIndex);
+            balls.splice(indexToRemove, 1);
+        });
+
+        addForm.addEventListener("submit", event => {
+            // prevent the default "form submit" behavior
+            // (sending data according to the "action" attr of the form)
+            event.preventDefault();
+
+            let name = document.getElementById("name").value;
+            let x = Number(document.getElementById("x").value);
+            let y = Number(document.getElementById("y").value);
+            let radius = Number(document.getElementById("radius").value);
+            let mass = Number(document.getElementById("mass").value);
+
+            // Use hexToRgb() to get the rgb values of the selected color as a string
+            // of the form 'red,green,blue'.
+            let color = hexToRgb(document.getElementById("color").value);
+            console.log(color);
+            // Separate the color string into its proper substrings for rbg values.
+            let red = color.substr(0, color.indexOf(',')); 
+            let green = color.substr(getSubstringIndex(color, ',', 1) + 1, getSubstringIndex(color, ',', 2) - (getSubstringIndex(color, ',', 1) + 1)); 
+            let blue = color.substr(getSubstringIndex(color, ',', 2) + 1, getSubstringIndex(color, ',', 2)); 
+
+            // console.log(getSubstringIndex(color, ',', 1) + "   " + getSubstringIndex(color, ',', 2))
+            // console.log(color.substr(getSubstringIndex(color, ',', 1), getSubstringIndex(color, ',', 2)))
+            // console.log(getSubstringIndex(color, ',', 2) + "   " + getSubstringIndex(color, ',', 2))
+            // console.log(color.substr(getSubstringIndex(color, ',', 2), getSubstringIndex(color, ',', 2)))
+            console.log(`red: ${red}   green: ${green}    blue: ${blue}`);
+
+            let insideAnotherBall = false;
+            let insideWall = false;
+
+            // If the x,y places it inside another ball,
+            // change the boolean.
+            balls.forEach( ball => { 
+                if (euclidDistance(x, y, ball.xp, ball.yp) <= (radius + ball.radius)) { 
+                    insideAnotherBall = true; 
+                    console.log(radius + ball.radius);
+                }
+            })
+
+            // If the x,y places it inside the wall,
+            // change the boolean.
+            if (x <= radius) { insideWall = true; }
+            else if (x >= (400 - radius)) { insideWall = true; }
+            else if (y <= radius) { insideWall = true; }
+            else if (y >= (400 - radius)) { insideWall = true; }
+            
+            // If the ball isn't inside the wall or another ball,
+            // add it to the list of balls and create its corresponding
+            // option in the select form.
+            if (!insideAnotherBall && !insideWall) { 
+                balls.push(new Ball(name, x, y, radius, mass, 0, 0, red, green, blue));
+                let newOption = document.createElement("option");
+                selectBall.appendChild(newOption);
+                //console.log(typeof name);
+                newOption.value = name;
+                newOption.innerHTML = name;
+            }
+        });
 
         splitVectorXY(balls);
 
@@ -93,11 +201,15 @@ document.addEventListener("DOMContentLoaded", () => {
             let distToEachBall = [];
             let angleBetweenEachBall = [];
 
+            // Add another location for a distance/angle between the balls
+            // for each ball that exists.
             balls.forEach(() => {
                 distToEachBall.push([]);
                 angleBetweenEachBall.push([]);
             })
 
+            // Update the distance between each ball and the
+            // angle between each ball.
             balls.forEach((ball, index) => {
                 for (i = 0; i < balls.length; i++) {
                     if (i !== index) {
@@ -112,7 +224,6 @@ document.addEventListener("DOMContentLoaded", () => {
             balls.forEach((ball, index) => {
                 for (i = 0; i < balls.length; i++) {
                     if (distToEachBall[index][i] <= (ball.radius + balls[i].radius + 1) && i !== index) {
-                        collision.innerHTML = "YES";
 
                         ball.hasCollided = true;
 
@@ -124,6 +235,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 }
             })
+
+            // If the ball has collided, update its
+            // velocity and position.
             balls.forEach(ball => {
                 if (ball.hasCollided === true) {
                     ball.vx = ball.newvx;
