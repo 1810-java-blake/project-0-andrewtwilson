@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                 .then(res => res.json())
                 .then(data => {
-                    console.log(data);
+                    console.log(data[0].faceAttributes.emotion);
                 })
                 .catch(err => console.log(err));
                     })
