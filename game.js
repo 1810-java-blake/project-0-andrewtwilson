@@ -27,80 +27,152 @@ function getSubstringIndex(str, substring, n) {
     return index;
 }
 
+// declare the Ball class, with properties for the physics calculations
+class Ball {
+    constructor(name, xp, yp, radius, mass, magnitude, direction, red, green, blue) {
+        this.name = name;
+        this.xp = xp;
+        this.yp = yp;
+        this.radius = radius;
+        this.mass = mass;
+        this.vector = {
+            magnitude,
+            direction
+        };
+        this.color = {
+            red,
+            green,
+            blue
+        };
+        this.vx = 0;
+        this.vy = 0;
+        this.newxv = 0;
+        this.newxy = 0;
+        this.hasCollided = false;
+    }
+}
+
+// ballOpaque class is used to create temporary objects that hold the
+// initialized values of a ball before it has been placed onto the canvas
+// by the user.
+class BallOpaque {
+    constructor(name, radius, mass, red, green, blue) {
+        this.name = name;
+        this.radius = radius;
+        this.mass = mass;
+        this.color = {
+            red,
+            green,
+            blue
+        };
+    }
+}
+
+// calcMagnitude() calculates the magnitude of the ball's movement
+// vector from its x and y components
+function calcMagnitude(balls) {
+    balls.forEach(ball => {
+        ball.vector.magnitude = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
+    })
+}
+
+// splitVectorXY() requires a vector magnitude and direction,
+// and splits this into its x and y components.
+// Currently only used after ball initialization
+function splitVectorXY(balls) {
+    balls.forEach(ball => {
+        ball.vx = ball.vector.magnitude * Math.cos(ball.vector.direction);
+        ball.vy = ball.vector.magnitude * Math.sin(ball.vector.direction);            
+    })
+}
+
+// calcAngle() calculates the angle that the ball is 
+// traveling given the vector's x and y components
+function calcAngle(balls) {
+    balls.forEach(ball => {
+        let temp = Math.atan2(ball.vy, ball.vx);
+        if (temp <= 0) {
+            temp += 2*Math.PI;
+        }
+        // console.log(temp);
+        ball.vector.direction = temp;
+    })
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     // Get the canvas that Processing-js will use
     let gameCanvas = document.getElementById("gameCanvas");
     let removeForm = document.getElementById("removeForm");
     let selectBall = document.getElementById("selectBall");
+    selectBall.selectedIndex = -1;
     let addForm = document.getElementById("addForm");
-
-    // function updateHTML(Balls) {
-    //     balls.forEach( ball => {
-    //         ball1.innerHTML = 
-    //     })
-    // }
 
     // Pass the function sketchProc (defined in myCode.js) to Processing's constructor.
     let sketchProc = function (processing) {
 
-        // declare the Ball class, with properties for the physics calculations
-        class Ball {
-            constructor(name, xp, yp, radius, mass, magnitude, direction, red, green, blue) {
-                this.name = name;
-                this.xp = xp;
-                this.yp = yp;
-                this.radius = radius;
-                this.mass = mass;
-                this.vector = {
-                    magnitude,
-                    direction
-                };
-                this.color = {
-                    red,
-                    green,
-                    blue
-                };
-                this.vx = 0;
-                this.vy = 0;
-                this.newxv = 0;
-                this.newxy = 0;
-                this.hasCollided = false;
-            }
-        }
-        function calcMagnitude(balls) {
-            balls.forEach(ball => {
-                ball.vector.magnitude = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
-            })
-        }
-        // splitVectorXY requires a vector magnitude and direction,
-        // and splits this into its x and y components.
-        // Currently only used after initialization
-        function splitVectorXY(balls) {
-            balls.forEach(ball => {
-                ball.vx = ball.vector.magnitude * Math.cos(ball.vector.direction);
-                ball.vy = ball.vector.magnitude * Math.sin(ball.vector.direction);            
-            })
-        }
-        // calcAngle() calculates the angle that the ball is 
-        // traveling given the vector's x and y components
-        function calcAngle(balls) {
-            balls.forEach(ball => {
-                let temp = Math.atan2(ball.vy, ball.vx);
-                if (temp <= 0) {
-                    temp += 2*Math.PI;
+        processing.mouseClicked = function() {
+            if (ballOpaque !== null) {
+                let insideAnotherBall = false;
+                let insideWall = false;
+
+                // If the x,y location of the mouse places it inside another ball,
+                // change the boolean so to not place the ball.
+                balls.forEach( ball => { 
+                    if (euclidDistance(processing.mouseX, processing.mouseY, ball.xp, ball.yp) <= (ballOpaque.radius + ball.radius)) { 
+                        insideAnotherBall = true; 
+                        console.log(ballOpaque.radius + ball.radius);
+                    }
+                })
+
+                // If the x,y of the mouse places it inside the wall,
+                // change the boolean so to not place the ball.
+                if (processing.mouseX <= ballOpaque.radius) { insideWall = true; }
+                else if (processing.mouseX >= (400 - ballOpaque.radius)) { insideWall = true; }
+                else if (processing.mouseY <= ballOpaque.radius) { insideWall = true; }
+                else if (processing.mouseY >= (400 - ballOpaque.radius)) { insideWall = true; }
+                
+                // If the user requested location isn't inside the wall or another ball,
+                // add it to the list of balls and create its corresponding
+                // option in the select form.
+                // Currently, you cannot create a ball with a movement vector. 10/27
+                if (!insideAnotherBall && !insideWall) { 
+                    balls.push(new Ball(ballOpaque.name, processing.mouseX, processing.mouseY, ballOpaque.radius, ballOpaque.mass, 
+                        0, 0, ballOpaque.color.red, ballOpaque.color.green, ballOpaque.color.blue));
+                    // console.log(balls[4]);
+                    let newOption = document.createElement("option");
+                    selectBall.appendChild(newOption);
+                    //console.log(typeof name);
+                    newOption.value = ballOpaque.name;
+                    newOption.innerHTML = ballOpaque.name;
+
+                    // Change the selected index of the select form to none
+                    selectBall.selectedIndex = -1;
+
+                    ballOpaque = null;
                 }
-                // console.log(temp);
-                ball.vector.direction = temp;
-            })
-        }
+            }
+        };
+
         // update() function updates the balls position, moving
         // it every call of the Draw() function according to it's velocity,
         // then draws the ball again.
         function update(balls) {
-            balls.forEach(ball => {
+            // If the ball is currently selected in the select element,
+            // change its appearance.
+            let editValue = null;
+            if (selectBall.selectedIndex >= 0) {
+                let editIndex = document.getElementById("selectBall").selectedIndex;
+                editValue = document.getElementById("selectBall").options[editIndex].value;
+            }
+
+            balls.forEach((ball,index) => {
                 ball.xp += ball.vx;
                 ball.yp += ball.vy;
                 ball.hasCollided = false;
+
+                if (editValue === ball.name) { processing.stroke(255, 255, 128); processing.strokeWeight(2); }
+                else { processing.stroke(0, 0, 0); processing.strokeWeight(1); }
+
                 processing.fill(ball.color.red, ball.color.green, ball.color.blue);
                 processing.ellipse(ball.xp, ball.yp, ball.radius * 2, ball.radius * 2);
             })
@@ -109,9 +181,11 @@ document.addEventListener("DOMContentLoaded", () => {
         let balls = [];
 
         balls.push(new Ball("ball1", 50, 190, 25, 2, 0.1, 0, 255, 0, 0));
-        balls.push(new Ball("ball2", 350, 200, 25, 10, 0.1, Math.PI, 1, 1, 1,));
+        balls.push(new Ball("ball2", 350, 200, 25, 10, 0.1, Math.PI, 100, 100, 100));
         balls.push(new Ball("ball3", 110, 200, 25, 3, 0, 0, 0, 0, 255));
         balls.push(new Ball("ball4", 110, 300, 15, 3, 0, 0, 0, 255, 0));
+
+        let ballOpaque = null;
 
         // When the "removeForm" form is submitted, remove the selected item from the list
         // and its corresponding ball from the balls array.
@@ -128,23 +202,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
             document.getElementById("selectBall").remove(removeIndex);
             balls.splice(indexToRemove, 1);
+
+            // Change the selected index of the select form to none
+            selectBall.selectedIndex = -1;
         });
 
+        // When the "addForm" form is submitted, create a new ball
+        // using the parameters found in the form submission.
         addForm.addEventListener("submit", event => {
             // prevent the default "form submit" behavior
             // (sending data according to the "action" attr of the form)
             event.preventDefault();
 
             let name = document.getElementById("name").value;
-            let x = Number(document.getElementById("x").value);
-            let y = Number(document.getElementById("y").value);
             let radius = Number(document.getElementById("radius").value);
             let mass = Number(document.getElementById("mass").value);
 
             // Use hexToRgb() to get the rgb values of the selected color as a string
             // of the form 'red,green,blue'.
             let color = hexToRgb(document.getElementById("color").value);
-            console.log(color);
+            // console.log(color);
+
             // Separate the color string into its proper substrings for rbg values.
             let red = color.substr(0, color.indexOf(',')); 
             let green = color.substr(getSubstringIndex(color, ',', 1) + 1, getSubstringIndex(color, ',', 2) - (getSubstringIndex(color, ',', 1) + 1)); 
@@ -154,38 +232,13 @@ document.addEventListener("DOMContentLoaded", () => {
             // console.log(color.substr(getSubstringIndex(color, ',', 1), getSubstringIndex(color, ',', 2)))
             // console.log(getSubstringIndex(color, ',', 2) + "   " + getSubstringIndex(color, ',', 2))
             // console.log(color.substr(getSubstringIndex(color, ',', 2), getSubstringIndex(color, ',', 2)))
-            console.log(`red: ${red}   green: ${green}    blue: ${blue}`);
+            // console.log(`red: ${red}   green: ${green}    blue: ${blue}`);
 
-            let insideAnotherBall = false;
-            let insideWall = false;
+            let nameExists = false;
+            balls.forEach( ball => { if (ball.name === name) { nameExists = true; }})
 
-            // If the x,y places it inside another ball,
-            // change the boolean.
-            balls.forEach( ball => { 
-                if (euclidDistance(x, y, ball.xp, ball.yp) <= (radius + ball.radius)) { 
-                    insideAnotherBall = true; 
-                    console.log(radius + ball.radius);
-                }
-            })
-
-            // If the x,y places it inside the wall,
-            // change the boolean.
-            if (x <= radius) { insideWall = true; }
-            else if (x >= (400 - radius)) { insideWall = true; }
-            else if (y <= radius) { insideWall = true; }
-            else if (y >= (400 - radius)) { insideWall = true; }
-            
-            // If the ball isn't inside the wall or another ball,
-            // add it to the list of balls and create its corresponding
-            // option in the select form.
-            if (!insideAnotherBall && !insideWall) { 
-                balls.push(new Ball(name, x, y, radius, mass, 0, 0, red, green, blue));
-                let newOption = document.createElement("option");
-                selectBall.appendChild(newOption);
-                //console.log(typeof name);
-                newOption.value = name;
-                newOption.innerHTML = name;
-            }
+            if (!nameExists) { ballOpaque = new BallOpaque(name, radius, mass, red, green, blue); }
+            else { alert("Name already exists!") };
         });
 
         splitVectorXY(balls);
@@ -198,6 +251,16 @@ document.addEventListener("DOMContentLoaded", () => {
             processing.background(199, 185, 185);
             // Update the balls' positions after the background is redrawn.
             update(balls);
+
+            // If there is an opaque ball, that means the user has clicked to add a new ball.
+            if (ballOpaque !== null) {
+                // Create an opaque ball drawing on the canvas using the properties of ballOpaque
+                processing.fill((ballOpaque.color.red, ballOpaque.color.green, ballOpaque.color.blue), 100);
+                processing.stroke((0, 0, 0), 100); 
+                processing.strokeWeight(1);
+                processing.ellipse(processing.mouseX, processing.mouseY, ballOpaque.radius * 2, ballOpaque.radius * 2);
+            }
+
             let distToEachBall = [];
             let angleBetweenEachBall = [];
 
