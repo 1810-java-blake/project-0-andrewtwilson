@@ -6,27 +6,49 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
     <script src="main.js"></script>
 </head>
 
 <body>
 
-    <video id="video">Video stream not available.</video>
+    <div class="contentArea">
+        <h1 id="mainHeading">
+            Emotion Sensor
+        </h1>
 
-    <button type="button" id="pictureBtn">Take Photo</button>
+        <div class="proceedDisplay">
+            <div>
+                <h3 id="instruction">
+                    Take a photo and then sense your emotion. 
+                    Look surprised to proceed.
+                </h3>
+            </div>
+            <div>
+                <button type="button" id="gamePageBtn"><strong>Proceed</strong></button>
+            </div>
+        </div>
 
-    <canvas id="canvas" height="800" width="800">
-    </canvas>
+        <div class="alert alert-warning" id="message">
+            <strong id="strongText">Warning!</strong> <span id="innerText">You're not surprised enough.</span>
+        </div>
 
-    <div class="output">
-        <img id="photo" alt="The camera capture will appear in this box.">
+        <div class="display">
+            <div class="camera">
+                <video id="video">Video stream not available.</video>
+
+                <button type="button" id="pictureBtn" class="buttons">Take Photo</button>
+            </div>
+
+            <div class="picture">
+                <canvas id="canvas" height="480" width="640"></canvas>
+
+                <button type="button" id="emotionBtn" class="buttons">Sense Emotion</button>
+            </div>
+        </div>
+
     </div>
-
-    <button type="button" id="emotionBtn">Show Emotion</button>
-
-    <button type="button" id="gamePageBtn">Game Page</button>
-
 </body>
 
 </html>
