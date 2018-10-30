@@ -1,5 +1,4 @@
 function euclidDistance(x1, y1, x2, y2) {
-    // console.log(x1 + " " + y1 + " " + x2 + " " + y2 + " ")
     return (Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)));
 }
 
@@ -105,7 +104,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let removeForm = document.getElementById("removeForm");
     let selectBall = document.getElementById("selectBall");
     selectBall.selectedIndex = -1;
-    let addForm = document.getElementById("addForm");
+    let addFormId = document.getElementById("addFormId");
+    let cancelBtn = document.getElementById("cancelBtn");
+    let instruction = document.getElementById("instruction");
 
     // Pass the function sketchProc (defined in myCode.js) to Processing's constructor.
     let sketchProc = function (processing) {
@@ -120,7 +121,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 balls.forEach( ball => { 
                     if (euclidDistance(processing.mouseX, processing.mouseY, ball.xp, ball.yp) <= (ballOpaque.radius + ball.radius)) { 
                         insideAnotherBall = true; 
-                        console.log(ballOpaque.radius + ball.radius);
                     }
                 })
 
@@ -138,15 +138,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!insideAnotherBall && !insideWall) { 
                     balls.push(new Ball(ballOpaque.name, processing.mouseX, processing.mouseY, ballOpaque.radius, ballOpaque.mass, 
                         0, 0, ballOpaque.color.red, ballOpaque.color.green, ballOpaque.color.blue));
-                    // console.log(balls[4]);
+
                     let newOption = document.createElement("option");
                     selectBall.appendChild(newOption);
-                    //console.log(typeof name);
+
                     newOption.value = ballOpaque.name;
                     newOption.innerHTML = ballOpaque.name;
 
                     // Change the selected index of the select form to none
                     selectBall.selectedIndex = -1;
+                    instruction.innerHTML = "Nice!";
 
                     ballOpaque = null;
                 }
@@ -203,13 +204,15 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("selectBall").remove(removeIndex);
             balls.splice(indexToRemove, 1);
 
+            if (selectBall.selectedIndex !== -1) { instruction.innerHTML = "Nice!"; }
+
             // Change the selected index of the select form to none
             selectBall.selectedIndex = -1;
         });
 
         // When the "addForm" form is submitted, create a new ball
         // using the parameters found in the form submission.
-        addForm.addEventListener("submit", event => {
+        addFormId.addEventListener("submit", event => {
             // prevent the default "form submit" behavior
             // (sending data according to the "action" attr of the form)
             event.preventDefault();
@@ -221,25 +224,26 @@ document.addEventListener("DOMContentLoaded", () => {
             // Use hexToRgb() to get the rgb values of the selected color as a string
             // of the form 'red,green,blue'.
             let color = hexToRgb(document.getElementById("color").value);
-            // console.log(color);
 
             // Separate the color string into its proper substrings for rbg values.
             let red = color.substr(0, color.indexOf(',')); 
             let green = color.substr(getSubstringIndex(color, ',', 1) + 1, getSubstringIndex(color, ',', 2) - (getSubstringIndex(color, ',', 1) + 1)); 
             let blue = color.substr(getSubstringIndex(color, ',', 2) + 1, getSubstringIndex(color, ',', 2)); 
 
-            // console.log(getSubstringIndex(color, ',', 1) + "   " + getSubstringIndex(color, ',', 2))
-            // console.log(color.substr(getSubstringIndex(color, ',', 1), getSubstringIndex(color, ',', 2)))
-            // console.log(getSubstringIndex(color, ',', 2) + "   " + getSubstringIndex(color, ',', 2))
-            // console.log(color.substr(getSubstringIndex(color, ',', 2), getSubstringIndex(color, ',', 2)))
-            // console.log(`red: ${red}   green: ${green}    blue: ${blue}`);
-
             let nameExists = false;
             balls.forEach( ball => { if (ball.name === name) { nameExists = true; }})
 
-            if (!nameExists) { ballOpaque = new BallOpaque(name, radius, mass, red, green, blue); }
+            if (!nameExists) { 
+                ballOpaque = new BallOpaque(name, radius, mass, red, green, blue); 
+                selectBall.selectedIndex = -1; 
+                instruction.innerHTML = "Click inside the simulation to place the ball."
+            }
             else { alert("Name already exists!") };
         });
+
+        cancelBtn.addEventListener("click", event => {
+            selectBall.selectedIndex = -1;                
+        })
 
         splitVectorXY(balls);
 
@@ -286,7 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // than their combined radii.
             balls.forEach((ball, index) => {
                 for (i = 0; i < balls.length; i++) {
-                    if (distToEachBall[index][i] <= (ball.radius + balls[i].radius) && i !== index) {// && distToEachBall[index][i] >= (ball.radius + balls[i].radius)) {
+                    if (distToEachBall[index][i] <= (ball.radius + balls[i].radius + 1) && i !== index && distToEachBall[index][i] >= (ball.radius + balls[i].radius - 1)) {
 
                         ball.hasCollided = true;
 
