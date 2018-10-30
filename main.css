@@ -1,3 +1,75 @@
-div~p {
-    color: red
+#mainHeading {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.795);
+    margin-right: 245px;
+    margin-left: 30px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+}
+
+#instruction {
+    margin-left: 70px;
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+#message {
+    margin-left: 50px;
+    margin-right: 270px;
+    visibility: hidden;
+}
+
+#video {
+    border: 1px solid black;
+    box-shadow: 4px 4px 4px black;
+    width:440px;
+    height:330px;
+}
+  
+#canvas {
+    border: 1px solid black;
+    box-shadow: 4px 4px 4px black;
+    width:440px;
+    height:330px;
+}
+
+.display {
+    padding-left: 100px;
+    padding-right: 200px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.proceedDisplay {
+    padding-right: 200px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+#gamePageBtn {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 30px;
+    margin-left: 40px;
+    border: 1px solid black;
+    box-shadow: 1px 1px 2px black;
+    visibility: hidden;
+}
+
+.buttons {
+    display:block;
+    position:relative;
+    margin-left:auto;
+    margin-right:auto;
+    bottom:32px;
+    background-color: rgba(0, 150, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0px 0px 1px 2px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    font-family: "Lucida Grande", "Arial", sans-serif;
+    color: rgba(255, 255, 255, 1.0);
+}
+
+.contentarea {
+    font-size: 16px;
+    font-family: "Lucida Grande", "Arial", sans-serif;
 }
