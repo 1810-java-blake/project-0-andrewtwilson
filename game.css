@@ -1,0 +1,53 @@
+#heading {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.795);
+    /* margin-right: 33px; */
+    margin-right: 300px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+}
+
+.mainHeading {
+    padding-left: 30px;
+}
+
+.removeFormClass {
+    border: 2px solid black;
+    background-color: rgba(233, 82, 77, 0.212);
+    width: 500px;
+    margin-bottom: 20px;
+    padding: 10px 20px 20px 20px;
+    border-radius: 10px;
+}
+
+.addFormClass {
+    border: 2px solid black;
+    background-color: rgba(13, 219, 116, 0.116);
+    width: 500px;
+    padding: 10px 20px 20px 20px;
+    border-radius: 10px;
+}
+
+.content {
+    padding-left: 50px;
+    padding-right: 300px;
+    padding-top: 50px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.heading {
+    padding-bottom: 8px;
+}
+
+#instruction {
+    padding-right: 194px;
+    padding-top: 50px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+#gameCanvas {
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.329);
+}
