@@ -6,38 +6,61 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Physics Simulation</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="game.css" />
     <script src="https://cdn.jsdelivr.net/processing.js/1.4.8/processing.min.js"></script>
     <script src="game.js"></script>
 </head>
 
 <body>
-    <p align="center">
-        <!--This draws the Canvas on the webpage -->
-        <canvas id="gameCanvas"></canvas>
-    </p>
-    <!-- <p align="left">Have the Circles collided?</p>
-    <h3 align="left" id="collision">NO</h3> -->
+    <div class="mainHeading">
+        <h1 id="heading">
+            Perfectly Elastic Collision Simulation
+        </h1>
+        <h3 id="instruction">
+            Try removing or adding a ball.
+        </h3>
+    </div>
 
-    <form id="removeForm">
-        <select name="Balls" id="selectBall">
-            <option value="ball1">Ball1</option>
-            <option value="ball2">Ball2</option>
-            <option value="ball3">Ball3</option>
-            <option value="ball4">Ball4</option>
-        </select>
-        <input type="submit" value="Remove Ball">
-    </form>
+    <div class="content">
+        <div>
+            <div class="removeFormClass">
+                <form id="removeForm">
+                    <h4 class="heading"><strong>Select a ball to remove here.</strong></h4>
+                    <select name="Balls" id="selectBall">
+                        <option value="ball1">Ball1</option>
+                        <option value="ball2">Ball2</option>
+                        <option value="ball3">Ball3</option>
+                        <option value="ball4">Ball4</option>
+                    </select>
+                    <input type="submit" value="Remove Ball">
+                    <button type="button" value="Cancel Selection" id="cancelBtn">Cancel Selection</button>
+                </form>
+            </div>
 
-    <form id="addForm">
-        <br />
-        Name: <input id="name" type="text" name="name" maxlength="20" required> <br />
-        Radius (2 digits max): <input id="radius" type="text" name="radius" pattern="[0-9]{1,2}" required> <br />
-        Mass (2 digits max):<input id="mass" type="text" name="mass" pattern="[0-9]{1,2}" required> <br />
-        Color: <input id="color" type="color" name="color" value="#ff0000" required>
+            <div class="addFormClass">
+                <form id="addFormId">
+                    <h4 class="heading"><strong>Create a new ball by entering its properties here.</strong></h4>
+                    Name: <input id="name" type="text" name="name" maxlength="20" required> <br />
+                    Radius (2 digits max): <input id="radius" type="text" name="radius" pattern="[0-9]{1,2}" required>
+                    <br />
+                    Mass (2 digits max): <input id="mass" type="text" name="mass" pattern="[0-9]{1,2}" required> <br />
+                    Color: <input id="color" type="color" name="color" value="#ff0000" required>
 
-        <input type="submit" value="Add Ball">
-    </form>
+                    <input type="submit" value="Add Ball">
+                </form>
+            </div>
+        </div>
+
+
+        <div>
+            <p align="center">
+                <!--This draws the Canvas on the webpage -->
+                <canvas id="gameCanvas"></canvas>
+            </p>
+        </div>
+    </div>
+
 </body>
 
 </html>
